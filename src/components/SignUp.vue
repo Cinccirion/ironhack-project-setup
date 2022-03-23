@@ -1,49 +1,92 @@
 <template>
-<div class="SignUp-Container">
-    Welcome to the Vue Task App
-    <div Class="SignUp-Form">
-    <h1>Sign In</h1>
-     <input
-        :value="email"
-        @input="event => $emit('update:email', event.target.value)"
-        type="email"
-        name="email"
-        placeholder="Email"
-    /> <br>
-    <input
-        :value="password"
-        @input="event => $emit('update:password', event.target.value)"
-        type="password"
-        name="password"
-        placeholder="Password"
-    />
-    <br>
-    <input
-        :value=" password"
-        @input="event => $emit('update:repeat password', event.target.value)"
-        type="password"
-        name="repeat password"
-        placeholder="Repeat Password"
-    />
-    <br>
-    <button>Register</button>
+  <div>
+    <!-- Error Handling -->
+
+    <div v-if="errorMsg">
+      <p>{{ errorMsg }}</p>
     </div>
-    <button>Click to Sign Up</button>
-    </div>
+
+    <!-- Register -->
+
+    <h1>Bienvenío a esto de las responsabilidades de cá uno</h1>
+    <form>
+      <h1>Regístrate aquín</h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Emilio"
+          required
+          id="email"
+          v-model="email"
+        />
+      </div>
+      <div>
+        <input
+          type="password"
+          placeholder="Clave secreta"
+          required
+          id="password"
+          v-model="password"
+        />
+      </div>
+
+      <div>
+        <input
+          type="password"
+          placeholder="Repite la clave secreta"
+          required
+          id="confirmPassword"
+          v-model="confirmPassword"
+        />
+      </div>
+      <br />
+      <button type="submit">Enrregistrate</button>
+      <p>
+        ¡Ah!, ¿Que tiés ya  una cuenta?
+        <PersonalRouter :route="route" :redirectText="redirectText" />
+      </p>
+    </form>
+    <!-- <button>Pulsa pa enrregistrarte</button> -->
+  </div>
 </template>
 
-<script>
-    
-    export default {
-        name: 'SignUpForm',
-        props: [ "email", "password", "repeat password"],
-      
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import PersonalRouter from "../components/PersonalRouter.vue";
+
+// Constants to catch userInput on signUp form
+const email = ref(null);
+const password = ref(null);
+const confirmPassword = ref(null);
+
+// Error Message to showcase userInputErrors
+const errorMsg = ref(null);
+
+// Props to use in my personal router
+const route = "/auth";
+const redirectText = "Afluye en tu cuenta, bonique";
+
+// The function that is going to be used in order to send the info of the user to supaBase in order to signUp
+async function signUp() {
+  if (password.value === confirmPassword.value) {
+    try {
+      await useUserStore().signUp(email.value, password.value);
+      // If (error) throw error
+      redirect.push({ path: "/auth" });
+    } catch (error) {
+      errorMsg.value = error.message;
+      setTimeout(() => {
+        errorMsg.value = null;
+      }, 5000);
     }
+    Return;
+  }
+  errorMsg.value = "Las contraseñas no son iguales, so borrico";
+  setTimeout(() => {
+    errorMsg.value = null;
+  }, 5000);
+}
 </script>
 
-<style>
-.SignUp-Form {
-    Border: solid black 2px;
-}
-
-</style>
+<style></style>

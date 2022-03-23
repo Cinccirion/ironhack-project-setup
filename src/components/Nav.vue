@@ -1,14 +1,8 @@
 <template>
-  <a href="http://localhost:3000">Home</a>
-  <a href="http://localhost:3000/auth">Authentication</a>
+  <!-- <router-link :to="{name: 'Auth'}">Valideison</router-link>
+<router-link :to="{name: 'App'}">Jom</router-link> -->
 </template>
 
-<script>
-export default {
-name: 'Nav-Bar',
-}
-</script>
+<script></script>
 
-<style>
-
-</style>
+<style></style>

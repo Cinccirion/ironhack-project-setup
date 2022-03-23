@@ -1,41 +1,75 @@
 <template>
-<div class="SignIn-Container">
-    Welcome to the Vue Task App
-    <div Class="SignIn-Form">
-    <h1>Sign In</h1>
-     <input
-        :value="email"
-        @input="event => $emit('update:email', event.target.value)"
-        type="email"
-        name="email"
-        placeholder="Email"
-    /> <br>
-    <input
-        :value="password"
-        @input="event => $emit('update:password', event.target.value)"
-        type="password"
-        name="password"
-        placeholder="Password"
-    />
-    <br>
-    <button>Log In</button>
+  <div>
+    <!-- Error Handling -->
+
+    <div v-if="errorMsg">
+      <p>{{ errorMsg }}</p>
     </div>
-    <button>Click to Sign Up</button>
-    </div>
+
+    <!-- LogIn -->
+
+    <h1>Bienvenío a esto de las responsabilidades de cá uno</h1>
+    <form>
+      <h1>Interna</h1>
+      <div>
+        <input
+          type="text"
+          placeholder="Emilio"
+          required
+          id="email"
+          v-model="email"
+        />
+      </div>
+
+      <div>
+        <input
+          type="password"
+          placeholder="Clave secreta"
+          required
+          id="password"
+          v-model="password"
+        />
+      </div>
+      <br />
+
+      <button type="submit">Penetra</button>
+      <p>
+        ¡Ah!, ¿Que no tiés una cuenta entoavía? 
+        <PersonalRouter :route="route" :redirectText="redirectText" />
+      </p>
+    </form>
+    <!-- <button>Pulsa pa Penetrar</button> -->
+  </div>
 </template>
 
-<script>
-    
-    export default {
-        name: 'LoginForm',
-        props: [ "email", "password"],
-      
-    }
+<script setup>
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import PersonalRouter from "../components/PersonalRouter.vue";
+
+// Constants to catch userInput on signIn form
+const email = ref(null);
+const password = ref(null);
+
+// Error Message to showcase userInputErrors
+const errorMsg = ref(null);
+
+// Props to use in my personal router
+const route = "/auth/sign-up";
+const redirectText = "Anda y enregistrate, zagalique";
+
+async function signIn() {
+  try {
+    await useUserStore().signIn(email.value, password.value);
+    // If (error) throw error;
+    redirect.push({ patch: "/" });
+  } catch (error) {
+    errorMsg.value = "Error: ${error.message}";
+    setTimeout(() => {
+      errorMsg.value = null;
+    }, 5000);
+  }
+}
 </script>
 
-<style>
-.SignIn-Form {
-    Border: solid black 2px;
-}
-
-</style>
+<style></style>
