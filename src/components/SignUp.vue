@@ -1,49 +1,67 @@
 <template>
-  <div>
+  <div class="max-w-screen-sm mx-auto px-4 py-10">
     <!-- Error Handling -->
 
-    <div v-if="errorMsg">
-      <p>{{ errorMsg }}</p>
+    <div v-if="errorMsg" class="mb-10 p-4 rounded-md bg-light-grey">
+      <p class="text-red-500">{{ errorMsg }}</p>
     </div>
 
     <!-- Register -->
+    <div>
+      <h1 class="text-4xl font-family:Liberation Mono font-extrabold">
+        Welcome to your Order Task App
+      </h1>
+    </div>
 
-    <h1>Bienvenío a esto de las responsabilidades de cá uno</h1>
-    <form>
-      <h1>Regístrate aquín</h1>
-      <div>
+    <form
+      @submit.prevent="signUp"
+      Class="p-8 flex flex-col bg-light-grey rounded-md shadow-lg"
+    >
+      <h1 Class="text-3xl text-at-light-green mb-4 text-orange-600">
+        Register
+      </h1>
+      <div class="flex flex-col mb-2">
         <input
           type="text"
-          placeholder="Emilio"
+          placeholder="Email"
           required
           id="email"
+          class="p-2 text-gray-500 focus:outline-none border-2 border-orange-200 rounded-md"
           v-model="email"
         />
       </div>
+      <br />
       <div>
         <input
           type="password"
-          placeholder="Clave secreta"
+          placeholder="Password"
           required
           id="password"
+          class="p-2 text-gray-500 focus:outline-none border-2 border-orange-200 w-full rounded-md"
           v-model="password"
         />
       </div>
-
+      <br />
       <div>
         <input
           type="password"
-          placeholder="Repite la clave secreta"
+          placeholder="Repeat Password"
           required
           id="confirmPassword"
+          class="p-2 text-gray-500 focus:outline-none border-2 border-orange-200 w-full rounded-md"
           v-model="confirmPassword"
         />
       </div>
       <br />
-      <button type="submit">Enrregistrate</button>
+      <button submit="signUp">Register</button>
+      <br />
       <p>
-        ¡Ah!, ¿Que tiés ya  una cuenta?
-        <PersonalRouter :route="route" :redirectText="redirectText" />
+        Already have an account? go to
+        <PersonalRouter
+          :route="route"
+          :redirectText="redirectText"
+          class="text-orange-600"
+        />
       </p>
     </form>
     <!-- <button>Pulsa pa enrregistrarte</button> -->
@@ -52,27 +70,25 @@
 
 <script setup>
 import { ref } from "vue";
+//import { UserStore } from '../store/user';
+import { supabase } from "../supabase";
 import { useRouter } from "vue-router";
 import PersonalRouter from "../components/PersonalRouter.vue";
+import { useUserStore } from "../store/user";
 
-// Constants to catch userInput on signUp form
-const email = ref(null);
-const password = ref(null);
-const confirmPassword = ref(null);
-
-// Error Message to showcase userInputErrors
-const errorMsg = ref(null);
-
-// Props to use in my personal router
+const errorMsg = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const email = ref("");
+const router = useRouter();
 const route = "/auth";
-const redirectText = "Afluye en tu cuenta, bonique";
+const redirectText = "Sign In";
+const redirect = useRouter();
 
-// The function that is going to be used in order to send the info of the user to supaBase in order to signUp
 async function signUp() {
   if (password.value === confirmPassword.value) {
     try {
       await useUserStore().signUp(email.value, password.value);
-      // If (error) throw error
       redirect.push({ path: "/auth" });
     } catch (error) {
       errorMsg.value = error.message;
@@ -80,12 +96,12 @@ async function signUp() {
         errorMsg.value = null;
       }, 5000);
     }
-    Return;
+  } else {
+    errorMsg.value = "Error: Passwords do not match";
+    setTimeout(() => {
+      errorMsg.value = null;
+    }, 5000);
   }
-  errorMsg.value = "Las contraseñas no son iguales, so borrico";
-  setTimeout(() => {
-    errorMsg.value = null;
-  }, 5000);
 }
 </script>
 

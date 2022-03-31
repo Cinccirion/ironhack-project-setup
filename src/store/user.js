@@ -12,27 +12,43 @@ export const useUserStore = defineStore("user", {
       this.user = user;
     },
     async signUp(email, password) {
-      const { user, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
-      });
-      if (error) throw error;
-      if (user) {
-        this.user = user;
-        console.log(this.user);
+      try {
+        const { user, error } = await supabase.auth.signUp({
+          email: email,
+          password: password,
+        });
+        if (error) throw error;
+        if (user) {
+          this.user = user;
+          console.log(this.user);
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     async signIn(email, password) {
-      const { user, error } = await supabase.auth.signIn({
-        email: email,
-        password: password,
-      });
+      try {
+        const { user, error } = await supabase.auth.signIn({
+          email: email,
+          password: password,
+        });
+        if (error) throw error;
+        if (user) {
+          this.user = user;
+          console.log(this.user);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async signOut() {
+      const { user, error } = await supabase.auth.signOut();
       if (error) throw error;
       if (user) {
         this.user = user;
       }
     },
-    signOut() {},
+
     persist: {
       enabled: true,
       strategies: [
