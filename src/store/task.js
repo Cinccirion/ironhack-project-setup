@@ -25,26 +25,19 @@ export const useTaskStore = defineStore("tasks", {
       ]);
     },
 
-    async editTodo(taskId, editedTask) {
+    async editTask(name, id) {
+      console.log(name, id);
       try {
         const { data, error } = await supabase
           .from("tasks")
-          .update({ title: editedTask })
-          .match("id", taskId);
+          .update({ title: name })
+          .match({ id: id });
         if (error) throw error;
+        return data;
       } catch (error) {
         console.log(error);
       }
     },
-
-    async CompletedTodo(taskId, status) {
-      const { data, error } = await supabase
-        .from("tasks")
-        .update({ is_complete: status })
-        .match({ id: taskId });
-      if (error) throw error;
-    },
-
     async removeTodo(taskId) {
       const { data, error } = await supabase
         .from("tasks")
@@ -52,5 +45,15 @@ export const useTaskStore = defineStore("tasks", {
         .match({ id: taskId });
       if (error) throw error;
     },
+
+
+    async isComplete(taskId, status){
+      const { data, error } = await supabase
+      .from("tasks")
+      .update({is_complete: status})
+      .match({id: taskId})
+      if(error) throw error;
+    },
+
   },
 });

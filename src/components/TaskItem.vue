@@ -19,11 +19,15 @@
             class="p-8 bg-white shadow-mg rounded flex items-center justify-between border-light-grey-600 shadow-md"
           >
             <div>
-              <div>
-                {{ todo.title }}
-              </div>
+              <input
+                :class="{ done: todo.is_complete }"
+                v-model="todo.title"
+                :disabled="!editingTodo"
+                @keydown.enter="editTask(todo)"
+                type="text"
+              />
               <div class="text-gray-500 text-sm">
-                {{ todo.inserted_at }}
+                {{ todo.inserted_at.slice(0, 19) }}
               </div>
             </div>
             <div class="space-x-2">
@@ -34,7 +38,12 @@
               >
                 &times;
               </button>
-              <button class="px-2 text-green-600" title="Mark as done">
+              <button
+                class="px-2 text-green-600"
+                title="Mark as done"
+                @click="isComplete(todo)"
+                v-if="isComplete(todo)"
+              >
                 &check;
               </button>
               <button class="px-2 text-orenage-600" title="Mark as undone">
@@ -51,7 +60,7 @@
                   fill="none"
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  @click="editTodo"
+                  @click="editTask(todo)"
                 >
                   <path stroke="none" d="M0 0h24v24H0z" />
                   <path
@@ -123,6 +132,29 @@ async function removeTodo(todo) {
   const id = todo.id;
   await taskStore.removeTodo(id);
   fetchAllTask();
+}
+
+const editingTodo = ref(false);
+const beforeEditTodo = ref("");
+
+async function editTask(todo) {
+  if (editingTodo.value === false) {
+    beforeEditTodo.value = todo.title;
+    editingTodo.value = true;
+    console.log("Tonychachacha");
+  } else {
+    const res = await useTaskStore().editTask(todo.title, todo.id);
+    console.log(res);
+    editingTodo.value = false;
+  }
+}
+
+async function isComplete(todo) {
+  const id = todo.id;
+  todo.is_complete = !todo.is_complete;
+  await taskStore.isComplete(id, todo.is_complete);
+  fetchAllTask();
+  console.log("puta vida");
 }
 </script>
 
